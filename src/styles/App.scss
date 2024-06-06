@@ -1,0 +1,62 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+h1 {
+  margin: 30px;
+  font-size: 35px;
+}
+
+.ant-picker-calendar {
+  max-width: 800px;
+}
+
+.ant-space {
+  display: flex;
+  justify-content: end;
+  position: relative;
+  background-color: rgb(248, 246, 246);
+  padding: 10px 20px;
+}
+
+main {
+  display: flex;
+  margin: 20px;
+}
+
+.task-list {
+  margin-left: 70px;
+
+  &__add-task {
+    margin: 20px 0;
+    display: flex;
+  }
+}
+
+.task-item {
+  margin-top: 20px;
+
+  li {
+    list-style: none;
+    margin: 10px 0;
+    background-color: rgb(241, 245, 247);
+    border-radius: 5px;
+    width: 500px;
+    padding: 15px;
+
+    p {
+      margin-bottom: 10px;
+      font-size: 20px;
+    }
+    .disabled {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    .ant-btn-dashed {
+      color: green;
+    }
+  }
+}
