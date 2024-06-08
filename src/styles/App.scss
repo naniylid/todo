@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+body {
+  overflow-x: hidden;
+}
+
 h1 {
   margin: 30px;
   font-size: 35px;
@@ -28,6 +32,7 @@ main {
 
 .task-list {
   margin-left: 70px;
+  min-width: 300px;
 
   &__add-task {
     margin: 20px 0;
@@ -43,7 +48,7 @@ main {
     margin: 10px 0;
     background-color: rgb(241, 245, 247);
     border-radius: 5px;
-    width: 500px;
+    width: 35vw;
     padding: 15px;
 
     p {
@@ -57,6 +62,23 @@ main {
 
     .ant-btn-dashed {
       color: green;
+    }
+  }
+}
+
+@media (max-width: 860px) {
+  main {
+    display: inline;
+
+    .task-list {
+      margin: 20px;
+      min-width: 300px;
+    }
+
+    .task-item {
+      li {
+        width: 93vw;
+      }
     }
   }
 }

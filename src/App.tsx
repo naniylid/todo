@@ -5,15 +5,17 @@ import { Profile } from './components/Profile';
 import { TaskList } from './components/TaskList';
 
 const App: React.FC = () => {
+  const [selectedProfile, setSelectedProfile] = React.useState<string>('lucy');
+
   return (
     <>
       <nav>
-        <Profile />
+        <Profile onSelectProfile={setSelectedProfile} />
       </nav>
       <h1>Планер дел и задач</h1>
       <main>
         <CalendarComponent />
-        <TaskList />
+        <TaskList selectedProfile={selectedProfile} />
       </main>
     </>
   );

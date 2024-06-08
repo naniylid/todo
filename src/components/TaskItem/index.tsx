@@ -4,27 +4,21 @@ import { Button, Flex } from 'antd';
 type TaskProps = {
   task: string;
   index: number;
+  completed: boolean;
+  onToggleComplete: () => void;
 };
 
-export const TaskItem: React.FC<TaskProps> = ({ task, index }) => {
-  const [isCompleted, setIsCompleted] = React.useState<boolean>(false);
-
-  const handleComplete = () => {
-    setIsCompleted(true);
-  };
-
-  const handleRestore = () => {
-    setIsCompleted(false);
-  };
-
+export const TaskItem: React.FC<TaskProps> = ({ task, index, completed, onToggleComplete }) => {
   return (
     <div className='task-item'>
       <ul>
         <li key={index}>
-          <p className={isCompleted ? 'disabled' : ''}>{task}</p>
+          <p className={completed ? 'disabled' : ''}>{task}</p>
           <Flex gap='small' wrap>
-            <Button onClick={handleComplete}>Готово</Button>
-            <Button type='dashed' onClick={handleRestore}>
+            <Button onClick={onToggleComplete} disabled={completed}>
+              Готово
+            </Button>
+            <Button type='dashed' onClick={onToggleComplete} disabled={!completed}>
               Восстановить
             </Button>
           </Flex>
