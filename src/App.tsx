@@ -14,7 +14,7 @@ const App: React.FC = () => {
       </nav>
       <h1>Планер дел и задач</h1>
       <main>
-        <CalendarComponent />
+        <CalendarComponent selectedProfile={selectedProfile} />
         <TaskList selectedProfile={selectedProfile} />
       </main>
     </>

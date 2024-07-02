@@ -1,17 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
-import dayjs from 'dayjs';
-import { Dayjs } from 'dayjs';
-
-type Holidays = {
-  date: string;
-  name: string;
-};
-
-interface DataState {
-  day: Dayjs;
-  data: Holidays[];
-}
+import dayjs, { Dayjs } from 'dayjs';
+import { DataState, Holidays } from './types';
 
 const initialState: DataState = {
   day: dayjs(new Date()),
