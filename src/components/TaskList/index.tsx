@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Button, Input } from 'antd';
+import dayjs from 'dayjs';
 import { selectDataSlice } from '../../redux/slice';
 import { TaskItem } from '../TaskItem/index';
 import { Task, TaskListProps, TasksByDateAndProfile } from './types';
@@ -8,17 +9,21 @@ import { Task, TaskListProps, TasksByDateAndProfile } from './types';
 export const TaskList: React.FC<TaskListProps> = ({ selectedProfile }) => {
   const [task, setTask] = useState<string>('');
   const [tasksByDateAndProfile, setTasksByDateAndProfile] = useState<TasksByDateAndProfile>({});
-  const { day } = useSelector(selectDataSlice);
+  const { day: dayString } = useSelector(selectDataSlice);
+  const day = dayjs(dayString);
 
   useEffect(() => {
-    const savedTasks = localStorage.getItem('tasksByDateAndProfile');
+    const savedTasks = localStorage.getItem(`tasksByDateAndProfile_${selectedProfile}`);
     if (savedTasks) {
       setTasksByDateAndProfile(JSON.parse(savedTasks));
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('tasksByDateAndProfile', JSON.stringify(tasksByDateAndProfile));
+    localStorage.setItem(
+      `tasksByDateAndProfile_${selectedProfile}`,
+      JSON.stringify(tasksByDateAndProfile),
+    );
   }, [tasksByDateAndProfile]);
 
   const handleAddTask = () => {
@@ -81,7 +86,7 @@ export const TaskList: React.FC<TaskListProps> = ({ selectedProfile }) => {
 
       {tasksForSelectedDate.map((t, index) => (
         <TaskItem
-          key={index} // Consider using a stable ID if possible, like t.id
+          key={index}
           task={t.text}
           index={index}
           completed={t.completed}

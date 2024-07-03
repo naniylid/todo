@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Calendar, Alert, Badge } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
-import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectDataSlice, setData, setDay } from '../redux/slice';
+import { fetchHolidays } from '../api/holidays';
 
 interface Task {
   completed: boolean;
@@ -26,41 +26,37 @@ const getTasksForDate = (
 
 export const CalendarComponent: React.FC<{ selectedProfile: string }> = ({ selectedProfile }) => {
   const dispatch = useDispatch();
-  const { day, data } = useSelector(selectDataSlice);
+  const { day: dayString, data } = useSelector(selectDataSlice);
   const [tasksByDateAndProfile, setTasksByDateAndProfile] = useState<TasksByDateAndProfile>({});
 
-  useEffect(() => {
-    const savedTasks = localStorage.getItem('tasksByDateAndProfile');
-    if (savedTasks) {
-      setTasksByDateAndProfile(JSON.parse(savedTasks));
+  // Функция для загрузки данных при изменении day или selectedProfile
+  const loadData = async (day: Dayjs, selectedProfile: string) => {
+    try {
+      const holidaysData = await fetchHolidays(day.year());
+      dispatch(setData(holidaysData));
+
+      // Загрузка tasksByDateAndProfile для выбранного профиля
+      const updatedTasks = localStorage.getItem(`tasksByDateAndProfile_${selectedProfile}`);
+      if (updatedTasks) {
+        setTasksByDateAndProfile(JSON.parse(updatedTasks));
+      }
+    } catch (error) {
+      console.error('Ошибка при запросе API:', error);
     }
-  }, []);
+  };
 
   useEffect(() => {
-    axios
-      .get(`https://api.11holidays.com/v1/holidays?country=ru&year=${dayjs(day).year()}`)
-      .then((resp) => {
-        dispatch(setData(resp.data));
-      })
-      .catch((e) => {
-        console.error('API request error:', e);
-      });
-  }, [day, dispatch]);
-
-  useEffect(() => {
-    // Обновление tasksByDateAndProfile при изменении day или selectedProfile
-    const updatedTasks = localStorage.getItem('tasksByDateAndProfile');
-    if (updatedTasks) {
-      setTasksByDateAndProfile(JSON.parse(updatedTasks));
-    }
-  }, [day, selectedProfile]);
+    loadData(dayjs(dayString), selectedProfile);
+  }, [dayString, selectedProfile]);
 
   const onSelect = (newValue: Dayjs) => {
-    dispatch(setDay(newValue));
+    dispatch(setDay(newValue.toISOString()));
+    loadData(newValue, selectedProfile); // Обновляем данные при выборе дня
   };
 
   const onPanelChange = (newValue: Dayjs) => {
-    dispatch(setDay(newValue));
+    dispatch(setDay(newValue.toISOString()));
+    loadData(newValue, selectedProfile); // Обновляем данные при изменении панели
   };
 
   const dateCellRender = (value: Dayjs) => {
@@ -83,7 +79,7 @@ export const CalendarComponent: React.FC<{ selectedProfile: string }> = ({ selec
           data.length > 0 ? (
             <>
               {data.map((holiday, index) =>
-                holiday.date === dayjs(day).format('YYYY-MM-DD') ? (
+                holiday.date === dayjs(dayString).format('YYYY-MM-DD') ? (
                   <p key={index}>{holiday.name}</p>
                 ) : null,
               )}
@@ -94,7 +90,7 @@ export const CalendarComponent: React.FC<{ selectedProfile: string }> = ({ selec
         }
       />
       <Calendar
-        value={day}
+        value={dayjs(dayString)}
         onSelect={onSelect}
         onPanelChange={onPanelChange}
         cellRender={dateCellRender}

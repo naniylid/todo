@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import { DataState, Holidays } from './types';
 
 const initialState: DataState = {
-  day: dayjs(new Date()),
+  day: dayjs(new Date()).toISOString(),
   data: [],
 };
 
@@ -12,7 +12,7 @@ const dataSlice = createSlice({
   name: 'data',
   initialState,
   reducers: {
-    setDay: (state, action: PayloadAction<Dayjs>) => {
+    setDay: (state, action: PayloadAction<string>) => {
       state.day = action.payload;
     },
     setData: (state, action: PayloadAction<Holidays[]>) => {
